@@ -10,17 +10,13 @@ namespace TaskRouter.Controllers
     [RoutePrefix("home")]
     public class HomeController : ApiController
     {
-        private static string AccountSid = ConfigurationManager.AppSettings["AccountSid"];
-        private static string AuthToken = ConfigurationManager.AppSettings["AuthToken"];
-        private static string WorkspaceSid = ConfigurationManager.AppSettings["WorkspaceSid"];
-        private static string WorkflowSid = ConfigurationManager.AppSettings["WorkflowSid"];
+        private static string _accountSid = ConfigurationManager.AppSettings["AccountSid"];
+        private static string _authToken = ConfigurationManager.AppSettings["AuthToken"];
+        private static string _workspaceSid = ConfigurationManager.AppSettings["WorkspaceSid"];
+        private static string _workflowSid = ConfigurationManager.AppSettings["WorkflowSid"];
 
-        private Twilio.TaskRouter.TaskRouterClient client = new Twilio.TaskRouter.TaskRouterClient(AccountSid, AuthToken);
-        public class AssignmentCallback
-        {
-            public string TaskSid { get; set; }
-            public string ReservationSid { get; set; }
-        }
+        private readonly TaskRouterClient _client = new TaskRouterClient(_accountSid, _authToken);
+
         [HttpGet]
         [Route("test")]
         public IHttpActionResult Test()
@@ -39,7 +35,7 @@ namespace TaskRouter.Controllers
         [Route("createTask")]
         public IHttpActionResult CreateTask()
         {
-            Task task = client.AddTask(WorkspaceSid, "{\"selected_language\":\"es\"}", WorkflowSid, null, 0);
+            Task task = _client.AddTask(_workspaceSid, "{\"selected_language\":\"es\"}", _workflowSid, null, 0);
             if (task.RestException?.Message != null)
             {
                 return BadRequest(task.RestException.Message);
@@ -47,18 +43,13 @@ namespace TaskRouter.Controllers
             return Ok($"Created task {task.Attributes + " " + task.Sid} - " + DateTime.Now);
         }
 
-        public class ReservationCallback
-        {
-            public string TaskSid { get; set; }
-            public string ReservationSid { get; set; }
-        }
         [HttpPost]
         [Route("accept_reservation")]
         public IHttpActionResult AcceptReservation([FromUri] ReservationCallback callback)
         {
             var taskSid = callback.TaskSid;
             var reservationSid = callback.ReservationSid;
-            Reservation reservation = client.UpdateReservation(WorkspaceSid, taskSid, reservationSid, "accepted", null);
+            Reservation reservation = _client.UpdateReservation(_workspaceSid, taskSid, reservationSid, "accepted", null);
             if(reservation.RestException?.Message != null)
             {
                 return BadRequest(reservation.RestException.Message);
