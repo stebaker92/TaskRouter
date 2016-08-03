@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -9,10 +10,10 @@ namespace TaskRouter.Controllers
     [RoutePrefix("home")]
     public class HomeController : ApiController
     {
-        private const string AccountSid = "";
-        private const string AuthToken = "";
-        private const string WorkspaceSid = "";
-        private const string WorkflowSid = "";
+        private static string AccountSid = ConfigurationManager.AppSettings["AccountSid"];
+        private static string AuthToken = ConfigurationManager.AppSettings["AuthToken"];
+        private static string WorkspaceSid = ConfigurationManager.AppSettings["WorkspaceSid"];
+        private static string WorkflowSid = ConfigurationManager.AppSettings["WorkflowSid"];
 
         private Twilio.TaskRouter.TaskRouterClient client = new Twilio.TaskRouter.TaskRouterClient(AccountSid, AuthToken);
         public class AssignmentCallback
