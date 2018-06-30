@@ -1,6 +1,6 @@
-﻿namespace TaskRouter.Controllers
+namespace TaskRouter.Models
 {
-    public class AssignmentCallback
+    public class ReservationCallback
     {
         public string TaskSid { get; set; }
         public string ReservationSid { get; set; }

@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using TaskRouter.Models;
 using Twilio.TaskRouter;
 
 namespace TaskRouter.Controllers
@@ -18,15 +19,15 @@ namespace TaskRouter.Controllers
         private readonly TaskRouterClient _client = new TaskRouterClient(_accountSid, _authToken);
 
         [HttpGet]
-        [Route("test")]
-        public IHttpActionResult Test()
+        [Route("")]
+        public IHttpActionResult Get()
         {
             return Ok("Hello world");
         }
 
         [HttpPost]
         [Route("assignment_callback")]
-        public IHttpActionResult Assignment_Callback(AssignmentCallback o)
+        public IHttpActionResult AssignmentCallback(AssignmentCallback callback)
         {
             return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, new { instruction = "accept" }));
         }
@@ -40,6 +41,7 @@ namespace TaskRouter.Controllers
             {
                 return BadRequest(task.RestException.Message);
             }
+
             return Ok($"Created task {task.Attributes + " " + task.Sid} - " + DateTime.Now);
         }
 
@@ -49,13 +51,15 @@ namespace TaskRouter.Controllers
         {
             var taskSid = callback.TaskSid;
             var reservationSid = callback.ReservationSid;
+
             Reservation reservation = _client.UpdateReservation(_workspaceSid, taskSid, reservationSid, "accepted", null);
-            if(reservation.RestException?.Message != null)
+
+            if (reservation.RestException?.Message != null)
             {
                 return BadRequest(reservation.RestException.Message);
             }
+
             return Ok($"AcceptReservation: {reservation.ReservationStatus} " + DateTime.Now);
         }
-
     }
 }
