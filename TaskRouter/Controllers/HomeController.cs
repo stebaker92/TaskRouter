@@ -22,7 +22,7 @@ namespace TaskRouter.Controllers
         [Route("")]
         public IHttpActionResult Get()
         {
-            return Ok("Hello world");
+            return Ok("Twilio TaskRouter Demo Api says: 'Hello world!'");
         }
 
         [HttpPost]
