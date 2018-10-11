@@ -22,7 +22,7 @@ namespace TaskRouter.Controllers
         [Route("")]
         public IHttpActionResult Get()
         {
-            return Ok("Hello world");
+            return Ok("Twilio TaskRouter Demo Api says: 'Hello world!'");
         }
 
         [HttpPost]
@@ -42,7 +42,7 @@ namespace TaskRouter.Controllers
                 return BadRequest(task.RestException.Message);
             }
 
-            return Ok($"Created task {task.Attributes + " " + task.Sid} - " + DateTime.Now);
+            return Ok($"Created task {task.Sid} with attributes {task.Attributes} at {DateTime.Now}");
         }
 
         [HttpPost]
@@ -59,7 +59,7 @@ namespace TaskRouter.Controllers
                 return BadRequest(reservation.RestException.Message);
             }
 
-            return Ok($"AcceptReservation: {reservation.ReservationStatus} " + DateTime.Now);
+            return Ok($"Accepted reservation for {taskSid} with status {reservation.ReservationStatus} at {DateTime.Now}");
         }
     }
 }
