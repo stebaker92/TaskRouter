@@ -1,1 +1,28 @@
-{}
+{
+  "FriendlyName": "Language Workflow",
+  "TaskReservationTimeout": 20,
+  "WorkflowConfiguration": {
+    "task_routing": {
+      "filters": [
+        {
+          "filter_friendly_name": "Voice Tasks",
+          "expression": "taskType == 1",
+          "targets": [
+            {
+              "queue": "{VoiceTaskQueueSid}",
+              "expression": "worker.primaryLang == task.selected_language",
+              "timeout": 1200,
+              "priority": 0
+            },
+            {
+              "queue": "{VoiceTaskQueueSid}",
+              "expression": "task.selected_language IN worker.otherLangs",
+              "timeout": null,
+              "priority": 0
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
